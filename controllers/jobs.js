@@ -10,15 +10,6 @@ const index = async (req, res) => {
   }
 }
 
-const show = async (req, res) => {
-  try {
-    
-  } catch (err) {
-    console.log(err)
-    res.status(500).json(err)
-  }
-}
-
 const create = async (req, res) => {
   try {
     
@@ -66,7 +57,6 @@ const deleteNote = async (req, res) => {
 
 export {
   index,
-  show,
   create,
   deleteJob as delete,
   update,
