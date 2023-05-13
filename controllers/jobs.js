@@ -2,7 +2,7 @@ import { Job } from "../models/job.js"
 
 const index = async (req, res) => {
   try {
-    const jobs = await Job.find({_id : req.user._id})
+    const jobs = await Job.find({ applicant : req.user.profile })
       .sort({ createdAt: 'desc' })
     res.status(200).json(jobs)
   } catch (err) {
