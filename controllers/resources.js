@@ -67,9 +67,13 @@ const createReview = async (req, res) => {
 
 const deleteReview = async (req, res) => {
   try {
-    
+    const resource = await Resource.findById(req.params.resourceId)
+    resource.reviews.id(req.params.reviewId).deleteOne()
+    await resource.save()
+    res.status(200).json(resource)
   } catch (err) {
-    
+    console.log(err)
+    res.status(500).json(err)
   }
 }
 
