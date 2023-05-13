@@ -6,15 +6,8 @@ const index = async (req, res) => {
       .sort({ createdAt: 'desc' })
     res.status(200).json(resources)
   } catch (err) {
+    console.log(err)
     res.status(500).json(err)
-  }
-}
-
-const show = async (req, res) => {
-  try {
-    
-  } catch (err) {
-    
   }
 }
 
@@ -31,9 +24,11 @@ const create = async (req, res) => {
 
 const deleteResource = async (req, res) => {
   try {
-    
+    const resource = await Resource.findByIdAndDelete(req.params.resourceId)
+    res.status(200).json(resource)
   } catch (err) {
-    
+    console.log(err)
+    res.status(500).json(err)
   }
 }
 
@@ -71,7 +66,6 @@ const updateReview = async (req, res) => {
 
 export {
   index,
-  show,
   create,
   deleteResource as delete,
   update,
