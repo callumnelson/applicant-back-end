@@ -1,3 +1,4 @@
+import { Profile } from "../models/profile.js"
 import { Resource } from "../models/resource.js"
 
 const index = async (req, res) => {
@@ -51,10 +52,16 @@ const createReview = async (req, res) => {
     req.body.author = req.user.profile
     const resource = await Resource.findById(req.params.resourceId)
     resource.reviews.push(req.body)
-    await review.save()
+    await resource.save()
     
+    const newReview = resource.reviews[resource.reviews.length - 1]
+    const profile = await Profile.findById(req.user.profile)
+    newReview.author = profile
+
+    res.status(201).json(newReview)
   } catch (err) {
-    
+    console.log(err)
+    res.status(500).json(err)
   }
 }
 
