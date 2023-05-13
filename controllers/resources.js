@@ -79,9 +79,15 @@ const deleteReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   try {
-    
+    const resource = await Resource.findById(req.params.resourceId)
+    const review = resource.reviews.id(req.params.reviewId)
+    review.content = req.body.content
+    review.rating = req.body.rating
+    await resource.save()
+    res.status(200).json(resource)
   } catch (err) {
-    
+    console.log(err)
+    res.status(500).json(err)
   }
 }
 
