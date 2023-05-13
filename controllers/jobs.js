@@ -2,8 +2,8 @@ import { Job } from "../models/job.js"
 
 const index = async (req, res) => {
   try {
-    const jobs = await Job.find({})
-    .sort({ createdAt: 'desc' })
+    const jobs = await Job.find({_id : req.user._id})
+      .sort({ createdAt: 'desc' })
     res.status(200).json(jobs)
   } catch (err) {
     console.log(err)
@@ -34,7 +34,11 @@ const deleteJob = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const updatedJob = await Job.findByIdAndUpdate(req.params.jobId, req.body, { new: true })
+    const updatedJob = await Job.findByIdAndUpdate(
+      req.params.jobId, 
+      req.body, 
+      { new: true }
+    )
     res.status(200).json(updatedJob)
   } catch (err) {
     console.log(err)
