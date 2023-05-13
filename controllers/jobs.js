@@ -22,7 +22,8 @@ const create = async (req, res) => {
 
 const deleteJob = async (req, res) => {
   try {
-    
+    const deletedJob = await Job.findByIdAndRemove(req.params.jobId)
+    res.status(200).json(deletedJob)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -31,7 +32,8 @@ const deleteJob = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    
+    const updatedJob = await Job.findByIdAndUpdate(req.params.jobId, req.body, { new: true })
+    res.status(200).json(updatedJob)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -40,7 +42,10 @@ const update = async (req, res) => {
 
 const createNote = async (req, res) => {
   try {
-    
+    const job = await Job.findById(req.params.jobId)
+    job.notes.push(req.body)
+    await job.save()
+    res.status(201).json(job)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -49,7 +54,11 @@ const createNote = async (req, res) => {
 
 const deleteNote = async (req, res) => {
   try {
-    
+    const job = await Job.findById(req.params.jobId)
+    const note = job.notes.id(req.params.noteId)
+    note.remove()
+    await job.save()
+    res.status(200).json(job)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
