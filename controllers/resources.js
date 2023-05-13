@@ -48,6 +48,10 @@ const update = async (req, res) => {
 
 const createReview = async (req, res) => {
   try {
+    req.body.author = req.user.profile
+    const resource = await Resource.findById(req.params.resourceId)
+    resource.reviews.push(req.body)
+    await review.save()
     
   } catch (err) {
     
