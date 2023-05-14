@@ -4,6 +4,7 @@ import { Resource } from "../models/resource.js"
 const index = async (req, res) => {
   try {
     const resources = await Resource.find({})
+      .populate("reviews.author")
       .sort({ createdAt: 'desc' })
     res.status(200).json(resources)
   } catch (err) {
@@ -53,6 +54,13 @@ const createReview = async (req, res) => {
     const resource = await Resource.findById(req.params.resourceId)
     resource.reviews.push(req.body)
     await resource.save()
+
+    let sum = 0
+    resource.reviews.forEach(review => {
+      sum += review.rating
+    })
+    resource.averageRating = sum / resource.reviews.length
+    await resource.save()
     
     const newReview = resource.reviews[resource.reviews.length - 1]
     const profile = await Profile.findById(req.user.profile)
@@ -70,6 +78,18 @@ const deleteReview = async (req, res) => {
     const resource = await Resource.findById(req.params.resourceId)
     resource.reviews.id(req.params.reviewId).deleteOne()
     await resource.save()
+
+    if (resource.reviews.length === 0) {
+      resource.averageRating = 'null'
+    } else {
+      let sum = 0
+      resource.reviews.forEach(review => {
+        sum += review.rating
+      })
+      resource.averageRating = sum / resource.reviews.length
+    }
+    await resource.save()
+
     res.status(200).json(resource)
   } catch (err) {
     console.log(err)
