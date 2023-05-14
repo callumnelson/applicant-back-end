@@ -4,6 +4,7 @@ import { Resource } from "../models/resource.js"
 const index = async (req, res) => {
   try {
     const resources = await Resource.find({})
+      .populate("reviews.author")
       .sort({ createdAt: 'desc' })
     res.status(200).json(resources)
   } catch (err) {
