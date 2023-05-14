@@ -1,4 +1,5 @@
 import { Profile } from '../models/profile.js'
+import { Job } from '../models/job.js'
 import { v2 as cloudinary } from 'cloudinary'
 
 async function index(req, res) {
@@ -33,6 +34,15 @@ async function addPhoto(req, res) {
 async function show(req, res) {
   try {
     const profile = await Profile.findById(req.params.profileId)
+    const jobs = await Job.find({ applicant: profile })
+      .sort({ createdAt: 'desc' })
+    const applicationArray = []
+    for (let i = 0; i < 3; i++) {
+      applicationArray.push(jobs[i])
+    }
+    profile.applications = applicationArray
+    await profile.save()
+
     res.status(200).json(profile)
   } catch (err) {
     console.log(err)
