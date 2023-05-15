@@ -52,7 +52,8 @@ const createReview = async (req, res) => {
   try {
     req.body.author = req.user.profile
     const resource = await Resource.findById(req.params.resourceId)
-    resource.reviews.push(req.body)
+      .populate('reviews.author')
+    resource.reviews.unshift(req.body)
     await resource.save()
 
     let sum = 0
@@ -66,7 +67,7 @@ const createReview = async (req, res) => {
     const profile = await Profile.findById(req.user.profile)
     newReview.author = profile
 
-    res.status(201).json(newReview)
+    res.status(201).json(resource)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -76,6 +77,7 @@ const createReview = async (req, res) => {
 const deleteReview = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.resourceId)
+      .populate('reviews.author')
     resource.reviews.id(req.params.reviewId).deleteOne()
     await resource.save()
 
@@ -100,11 +102,24 @@ const deleteReview = async (req, res) => {
 const updateReview = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.resourceId)
+      .populate('reviews.author')
     const review = resource.reviews.id(req.params.reviewId)
     review.content = req.body.content
     review.rating = req.body.rating
     await resource.save()
-    res.status(200).json(resource)
+
+    let sum = 0
+    resource.reviews.forEach(review => {
+      sum += review.rating
+    })
+    resource.averageRating = sum / resource.reviews.length
+    await resource.save()
+    
+    const newReview = resource.reviews[resource.reviews.length - 1]
+    const profile = await Profile.findById(req.user.profile)
+    newReview.author = profile
+
+    res.status(201).json(resource)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
