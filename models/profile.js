@@ -10,7 +10,7 @@ const profileSchema = new Schema({
     type: String
   },
   applications: [{
-    type: Schema.Types.ObjectId, 
+    type: Schema.Types.ObjectId,
     ref: 'Job'
   }],
   role: {
