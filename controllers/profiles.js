@@ -34,15 +34,8 @@ async function addPhoto(req, res) {
 async function show(req, res) {
   try {
     const profile = await Profile.findById(req.params.profileId)
-    const jobs = await Job.find({ applicant: profile })
-      .sort({ createdAt: 'desc' })
-    const applicationArray = []
-    for (let i = 0; i < 3; i++) {
-      applicationArray.push(jobs[i])
-    }
-    profile.applications = applicationArray
-    await profile.save()
-
+    .populate('applications')
+    .sort({'applications.updatedAt': 'desc'})
     res.status(200).json(profile)
   } catch (err) {
     console.log(err)
