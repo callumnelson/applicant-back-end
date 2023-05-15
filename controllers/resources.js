@@ -78,11 +78,11 @@ const deleteReview = async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.resourceId)
       .populate('reviews.author')
-    resource.reviews.id(req.params.reviewId).deleteOne()
+    resource.reviews.remove(req.params.reviewId)
     await resource.save()
 
     if (resource.reviews.length === 0) {
-      resource.averageRating = 'null'
+      resource.averageRating = null
     } else {
       let sum = 0
       resource.reviews.forEach(review => {
