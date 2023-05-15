@@ -44,6 +44,8 @@ async function show(req, res) {
 
 async function createResume(req, res) {
   try {
+    const resume = req.body
+    console.log('resume', resume)
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.profileId, 
       req.body, 
