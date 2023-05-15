@@ -63,7 +63,7 @@ const createReview = async (req, res) => {
     resource.averageRating = sum / resource.reviews.length
     await resource.save()
     
-    const newReview = resource.reviews[resource.reviews.length - 1]
+    const newReview = resource.reviews[0]
     const profile = await Profile.findById(req.user.profile)
     newReview.author = profile
 
@@ -114,10 +114,6 @@ const updateReview = async (req, res) => {
     })
     resource.averageRating = sum / resource.reviews.length
     await resource.save()
-    
-    const newReview = resource.reviews[resource.reviews.length - 1]
-    const profile = await Profile.findById(req.user.profile)
-    newReview.author = profile
 
     res.status(201).json(resource)
   } catch (err) {
