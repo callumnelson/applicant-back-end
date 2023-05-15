@@ -1,10 +1,11 @@
 import { Job } from "../models/job.js"
+import { Profile } from "../models/profile.js"
 
 const index = async (req, res) => {
   try {
-    const jobs = await Job.find({ applicant : req.user.profile })
-      .sort({ createdAt: 'desc' })
-    res.status(200).json(jobs)
+    const profile = await Profile.findById(req.user.profile)
+      .populate('applications')
+    res.status(200).json(profile.applications)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -13,8 +14,11 @@ const index = async (req, res) => {
 
 const create = async (req, res) => {
   try {
+    const profile = await Profile.findById(req.user.profile)
     req.body.applicant = req.user.profile
     const job = await Job.create(req.body)
+    profile.applications.push(job._id)
+    await profile.save()
     res.status(201).json(job)
   } catch (err) {
     console.log(err)
@@ -24,7 +28,10 @@ const create = async (req, res) => {
 
 const deleteJob = async (req, res) => {
   try {
+    const profile = await Profile.findById(req.user.profile)
     const deletedJob = await Job.findByIdAndRemove(req.params.jobId)
+    profile.applications.remove(deletedJob._id)
+    await profile.save()
     res.status(200).json(deletedJob)
   } catch (err) {
     console.log(err)
