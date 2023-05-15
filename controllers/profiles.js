@@ -35,7 +35,6 @@ async function show(req, res) {
   try {
     const profile = await Profile.findById(req.params.profileId)
     .populate('applications')
-    .sort({'applications.updatedAt': 'desc'})
     res.status(200).json(profile)
   } catch (err) {
     console.log(err)
@@ -43,4 +42,28 @@ async function show(req, res) {
   }
 }
 
-export { index, addPhoto, show }
+async function createResume(req, res) {
+  try {
+    console.log('new resume')
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+async function createBrandStatement(req, res) {
+  try {
+    console.log('new brand')
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+export { 
+  index, 
+  addPhoto, 
+  show,
+  createResume,
+  createBrandStatement,
+}
