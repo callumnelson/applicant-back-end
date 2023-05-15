@@ -11,8 +11,8 @@ const router = Router()
 router.use(decodeUserFromToken)
 router.get('/', checkAuth, profilesCtrl.index)
 router.get('/:profileId', checkAuth, profilesCtrl.show)
-router.post('/:jobId/resume', checkAuth, profilesCtrl.createResume)
-router.post('/:jobId/brand', checkAuth, profilesCtrl.createBrandStatement)
+router.post('/:profileId/resume', checkAuth, profilesCtrl.createResume)
+router.post('/:profileId/brand', checkAuth, profilesCtrl.createBrandStatement)
 router.put('/:id/add-photo', checkAuth, profilesCtrl.addPhoto)
 
 

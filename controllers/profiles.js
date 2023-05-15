@@ -33,6 +33,7 @@ async function addPhoto(req, res) {
 
 async function show(req, res) {
   try {
+    console.log('show params', req.params)
     const profile = await Profile.findById(req.params.profileId)
     .populate('applications')
     res.status(200).json(profile)
@@ -44,7 +45,8 @@ async function show(req, res) {
 
 async function createResume(req, res) {
   try {
-    console.log('new resume')
+    console.log('create resume params', req.params)
+    const profile = await Profile.findById(req.params.profileId)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
