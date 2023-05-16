@@ -100,16 +100,21 @@ async function removeStarredResource (req, res) {
 
 async function deleteProfile(req, res) {
   try {
-    const profile = await Profile.findById(req.params.profileId)
-    const user = await User.findOne({profile : req.params.profileId})
-    console.log(profile)
-    console.log(user)
-    const jobs = await Job.deleteMany({_id : {$in: profile.applications}})
-    //delete profile
-    await profile.deleteOne()
-    //delete user
-    await user.deleteOne()
-    res.status(200).json(profile)
+    const requestProfile = await Profile.findById(req.user.profile)
+    if (requestProfile.role > 300){
+      const profile = await Profile.findById(req.params.profileId)
+      const user = await User.findOne({profile : req.params.profileId})
+      console.log(profile)
+      console.log(user)
+      const jobs = await Job.deleteMany({_id : {$in: profile.applications}})
+      //delete profile
+      await profile.deleteOne()
+      //delete user
+      await user.deleteOne()
+      res.status(200).json(profile)
+    } else {
+      throw new Error('Access Denied: Not an admin')
+    }
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
