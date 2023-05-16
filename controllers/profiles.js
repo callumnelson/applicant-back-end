@@ -1,4 +1,5 @@
 import { Profile } from '../models/profile.js'
+import { User } from '../models/user.js'
 import { Job } from '../models/job.js'
 import { v2 as cloudinary } from 'cloudinary'
 
@@ -97,6 +98,24 @@ async function removeStarredResource (req, res) {
   }
 }
 
+async function deleteProfile(req, res) {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    const user = await User.findOne({profile : req.params.profileId})
+    console.log(profile)
+    console.log(user)
+    const jobs = await Job.deleteMany({_id : {$in: profile.applications}})
+    //delete profile
+    await profile.deleteOne()
+    //delete user
+    await user.deleteOne()
+    res.status(200).json(profile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 export { 
   index, 
   addPhoto, 
@@ -105,4 +124,5 @@ export {
   createBrandStatement,
   addStarredResource,
   removeStarredResource,
+  deleteProfile as delete,
 }
