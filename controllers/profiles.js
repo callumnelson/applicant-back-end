@@ -1,5 +1,5 @@
 import { Profile } from '../models/profile.js'
-import { Resource } from '../models/resource.js'
+import { Job } from '../models/job.js'
 import { v2 as cloudinary } from 'cloudinary'
 
 async function index(req, res) {
@@ -75,9 +75,8 @@ async function createBrandStatement(req, res) {
 
 async function addStarredResource(req, res) {
   try {
-    const starredResource = await Resource.findById(req.body._id)
     const profile = await Profile.findById(req.params.profileId)
-    profile.starredResources.push(starredResource)
+    profile.starredResources.push(req.body)
     await profile.save()
     res.status(201).json(profile)
   } catch (err) {
