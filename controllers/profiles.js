@@ -84,6 +84,18 @@ async function addStarredResource(req, res) {
   }
 }
 
+async function removeStarredResource (req, res) {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    profile.starredResources.remove(req.params.resourceId)
+    await profile.save()
+    res.status(201).json(profile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 export { 
   index, 
   addPhoto, 
@@ -91,4 +103,5 @@ export {
   createResume,
   createBrandStatement,
   addStarredResource,
+  removeStarredResource,
 }
