@@ -72,10 +72,36 @@ async function createBrandStatement(req, res) {
   }
 }
 
+async function addStarredResource(req, res) {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    profile.starredResources.push(req.body)
+    await profile.save()
+    res.status(201).json(profile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+async function removeStarredResource (req, res) {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    profile.starredResources.remove(req.params.resourceId)
+    await profile.save()
+    res.status(201).json(profile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 export { 
   index, 
   addPhoto, 
   show,
   createResume,
   createBrandStatement,
+  addStarredResource,
+  removeStarredResource,
 }

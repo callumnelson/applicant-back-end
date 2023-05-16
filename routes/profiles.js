@@ -13,6 +13,8 @@ router.get('/', checkAuth, profilesCtrl.index)
 router.get('/:profileId', checkAuth, profilesCtrl.show)
 router.post('/:profileId/resume', checkAuth, profilesCtrl.createResume)
 router.post('/:profileId/brand', checkAuth, profilesCtrl.createBrandStatement)
+router.post('/:profileId/starredResources', checkAuth, profilesCtrl.addStarredResource)
+router.post('/:profileId/starredResources/:resourceId', checkAuth, profilesCtrl.removeStarredResource)
 router.put('/:id/add-photo', checkAuth, profilesCtrl.addPhoto)
 
 
