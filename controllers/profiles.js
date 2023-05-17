@@ -80,21 +80,16 @@ async function deleteProfile(req, res) {
     const requestProfile = await Profile.findById(req.user.profile)
     if (requestProfile.role > 200){
       const profileToDelete = await Profile.findById(req.params.profileId)
-      console.log(profileToDelete)
       const user = await User.findOne({profile : req.params.profileId})
       const jobs = await Job.deleteMany({_id : {$in: profileToDelete.applications}})
       const resourcesOwned = await Resource.deleteMany({owner: profileToDelete._id})
       const remainingResources = await Resource.find({})
-      console.log('Deleting profile>>', profileToDelete)
       await Promise.all(
         remainingResources.map(async resource => {
           await Promise.all(resource.reviews.map(async review => {
             if (review.author.equals(profileToDelete._id)){
-              console.log('Resource found >>', resource)
-              console.log('Review found >>', review)
               resource.reviews.remove(review._id)
               await resource.save()
-              console.log('Resource after delete >>', resource)
             }
           }))
         })
