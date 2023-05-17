@@ -77,7 +77,7 @@ async function createBrandStatement(req, res) {
 async function deleteProfile(req, res) {
   try {
     const requestProfile = await Profile.findById(req.user.profile)
-    if (requestProfile.role > 300){
+    if (requestProfile.role > 200){
       const profile = await Profile.findById(req.params.profileId)
       const user = await User.findOne({profile : req.params.profileId})
       console.log(profile)
