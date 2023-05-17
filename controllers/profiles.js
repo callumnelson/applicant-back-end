@@ -2,6 +2,7 @@ import { Profile } from '../models/profile.js'
 import { User } from '../models/user.js'
 import { Job } from '../models/job.js'
 import { v2 as cloudinary } from 'cloudinary'
+import { Resource } from '../models/resource.js'
 
 async function index(req, res) {
   try {
@@ -78,16 +79,31 @@ async function deleteProfile(req, res) {
   try {
     const requestProfile = await Profile.findById(req.user.profile)
     if (requestProfile.role > 200){
-      const profile = await Profile.findById(req.params.profileId)
+      const profileToDelete = await Profile.findById(req.params.profileId)
+      console.log(profileToDelete)
       const user = await User.findOne({profile : req.params.profileId})
-      console.log(profile)
-      console.log(user)
-      const jobs = await Job.deleteMany({_id : {$in: profile.applications}})
+      const jobs = await Job.deleteMany({_id : {$in: profileToDelete.applications}})
+      const resourcesOwned = await Resource.deleteMany({owner: profileToDelete._id})
+      const remainingResources = await Resource.find({})
+      console.log('Deleting profile>>', profileToDelete)
+      await Promise.all(
+        remainingResources.map(async resource => {
+          await Promise.all(resource.reviews.map(async review => {
+            if (review.author.equals(profileToDelete._id)){
+              console.log('Resource found >>', resource)
+              console.log('Review found >>', review)
+              resource.reviews.remove(review._id)
+              await resource.save()
+              console.log('Resource after delete >>', resource)
+            }
+          }))
+        })
+      )
       //delete profile
-      await profile.deleteOne()
+      await profileToDelete.deleteOne()
       //delete user
       await user.deleteOne()
-      res.status(200).json(profile)
+      res.status(200).json(profileToDelete)
     } else {
       throw new Error('Access Denied: Not an admin')
     }
