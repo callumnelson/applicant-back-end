@@ -47,12 +47,13 @@ async function show(req, res) {
 
 async function createResume(req, res) {
   try {
+    const resume = req.body
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.profileId, 
       req.body, 
       { new: true }
     )
-    res.status(200).json(updatedProfile)
+    res.status(200).json(resume)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
