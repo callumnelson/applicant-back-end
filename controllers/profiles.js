@@ -47,12 +47,13 @@ async function show(req, res) {
 
 async function createResume(req, res) {
   try {
+    const resume = req.body
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.profileId, 
       req.body, 
       { new: true }
     )
-    res.status(200).json(updatedProfile)
+    res.status(200).json(resume)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
@@ -61,14 +62,13 @@ async function createResume(req, res) {
 
 async function createBrandStatement(req, res) {
   try {
+    const brand = req.body
     const updatedProfile = await Profile.findByIdAndUpdate(
       req.params.profileId, 
       req.body, 
       { new: true }
     )
-    console.log('updated brand profile', updatedProfile)
-    res.status(200).json(updatedProfile)
-    console.log('new brand')
+    res.status(200).json(brand)
   } catch (err) {
     console.log(err)
     res.status(500).json(err)
