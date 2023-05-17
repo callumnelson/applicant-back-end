@@ -122,6 +122,34 @@ const updateReview = async (req, res) => {
   }
 }
 
+const addStarredResource = async (req, res) => {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    const starredResource = await Resource.findById(req.params.resourceId)
+    profile.starredResources.push(starredResource)
+    await profile.save()
+    res.status(201).json(starredResource)
+  }
+  catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+const deleteStarredResource = async (req, res) => {
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+    const unstarredResource = await Resource.findById(req.params.resourceId)
+    profile.starredResources.remove(unstarredResource)
+    await profile.save()
+    res.status(201).json(unstarredResource)
+  }
+  catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 export {
   index,
   create,
@@ -129,5 +157,7 @@ export {
   update,
   createReview,
   deleteReview,
-  updateReview
+  updateReview,
+  addStarredResource,
+  deleteStarredResource,
 }
